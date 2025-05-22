@@ -49,7 +49,7 @@ def load_models():
 @st.cache_resource
 def process_data():
     # Process text data and create FAISS index once
-    text_path = r'C:\Users\arez3\Desktop\Etudes\Limitless Learning\Gen AI\Mini projet\Books\text\Diagnosisofbusiness.txt'
+    text_path = r'Books\text\Diagnosisofbusiness.txt'
     text = read_text_from_file(text_path)
     
     chunks = chunk_text(text)
