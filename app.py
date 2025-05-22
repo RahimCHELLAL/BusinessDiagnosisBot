@@ -14,22 +14,9 @@ import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
 
-#Chatbot AI below
-os.environ["TRANSFORMERS_NO_TF"] = "1"  # disable tensorflow fallback
-
-model = SentenceTransformer('all-MiniLM-L6-v2')
-genai.configure(api_key="AIzaSyDXO1LSxJ9I5281a9E7e6MitdlWFlv_r30")
-modelai = genai.GenerativeModel("gemma-3-12b-it")
-tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
-
-
-
 def read_text_from_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
-
-text_path = r'C:\Users\arez3\Desktop\Etudes\Limitless Learning\Gen AI\Mini projet\Books\text\Diagnosisofbusiness.txt'
-text = read_text_from_file(text_path)
 
 def chunk_text(text, chunk_size=1000, overlap=200):
     chunk = []
@@ -41,32 +28,59 @@ def chunk_text(text, chunk_size=1000, overlap=200):
         start += chunk_size - overlap
     return chunk
 
+# Chatbot environment below:
+st.set_page_config(page_title="Business Health Chatbot")
+st.title("🤖 Business Health Assistant")
+
+
+#Chatbot AI below
+# Cache all heavy initialization
+@st.cache_resource
+def load_models():
+    # Load all models once
+    os.environ["TRANSFORMERS_NO_TF"] = "1"
+    genai.configure(api_key="AIzaSyDXO1LSxJ9I5281a9E7e6MitdlWFlv_r30")
+    return {
+        'sentence_model': SentenceTransformer('all-MiniLM-L6-v2'),
+        'gemini_model': genai.GenerativeModel("gemma-3-12b-it"),
+        'tokenizer': AutoTokenizer.from_pretrained('bert-base-uncased')
+    }
+
+@st.cache_resource
+def process_data():
+    # Process text data and create FAISS index once
+    text_path = r'C:\Users\arez3\Desktop\Etudes\Limitless Learning\Gen AI\Mini projet\Books\text\Diagnosisofbusiness.txt'
+    text = read_text_from_file(text_path)
+    
+    chunks = chunk_text(text)
+    embeddings = models['sentence_model'].encode(chunks)
+    dimension = len(embeddings[0])
+    index = faiss.IndexFlatL2(dimension)
+    index.add(np.array(embeddings))
+
+    return chunks, index
+
+# Initialize cached resources
+models = load_models()
+chunks, index = process_data()
+
+
 def search_similar_chunks(query, model, index, chunks, top_k=3):
-    query_embedding = model.encode([query])
+    query_embedding = models['sentence_model'].encode([query])
     D, I = index.search(np.array(query_embedding), top_k)
     return [chunks[i] for i in I[0]]
 
 
-
-chunks = chunk_text(text)
-embeddings = model.encode(chunks)
-dimension = len(embeddings[0])
-index = faiss.IndexFlatL2(dimension)
-index.add(np.array(embeddings))
-
-
-
-
 def trim_text_by_tokens(text, max_tokens):
     # Tokenize text to tokens
-    tokens = tokenizer.tokenize(text)
+    tokens = models['tokenizer'].tokenize(text)
     
     # Trim tokens if longer than max_tokens
     #if len(tokens) > max_tokens:
     #    tokens = tokens[:max_tokens]
     
     # Convert tokens back to string
-    trimmed_text = tokenizer.convert_tokens_to_string(tokens)
+    trimmed_text = models['tokenizer'].convert_tokens_to_string(tokens)
     return trimmed_text
 
 def ask_gemini(question, context_chunks, max_context_chars=10000, max_retries=5, initial_wait_time=5):
@@ -79,7 +93,7 @@ def ask_gemini(question, context_chunks, max_context_chars=10000, max_retries=5,
     wait_time = initial_wait_time
     while retries < max_retries:
         try:
-            response = modelai.generate_content(prompt)
+            response = models['gemini_model'].generate_content(prompt)
             return response.text
         except ResourceExhausted as e:
             print(f"Rate limit exceeded. Retrying in {wait_time} seconds... (Attempt {retries + 1}/{max_retries})")
@@ -94,19 +108,28 @@ def ask_gemini(question, context_chunks, max_context_chars=10000, max_retries=5,
     raise ResourceExhausted(f"Failed to get response after {max_retries} retries due to rate limiting.")
 
 
-# Chatbot environment below:
-st.set_page_config(page_title="Business Health Chatbot")
-st.title("🤖 Business Health Assistant")
-user_input = st.text_input("Let me help you, give me the core of yours problems in your buisness, and I will help you get a diagnosis and solutions")
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-if user_input:
-    message = st.chat_message("human")
-    message.write(user_input)
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    with st.spinner("Thinking..."):
-        query = "Give me a diagnose of my buisness problems and possible solutions"
-        relevant_chunks = search_similar_chunks(query, model, index, chunks, top_k=1)
-        ai_answer = ask_gemini(user_input, relevant_chunks)
-        answer = st.chat_message("ai")
-        answer.write(ai_answer)
+if user_input := st.chat_input("Let me help you, write your business probleme here"):
+    # Add user message to history and display immediately
+    st.session_state.messages.append({"role": "human", "content": user_input})
+    with st.chat_message("human"):
+        st.markdown(user_input)
+
+    # Start thinking immediately
+    with st.chat_message("ai"):
+        with st.spinner("Thinking..."):
+            query = "Give me a diagnose of my business problems and possible solutions"
+            relevant_chunks = search_similar_chunks(query, models['sentence_model'], index, chunks, top_k=1)
+            ai_answer = ask_gemini(user_input, relevant_chunks)
+        
+        # Add and display response
+        st.session_state.messages.append({"role": "ai", "content": ai_answer})
+        st.markdown(ai_answer)
+
