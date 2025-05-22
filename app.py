@@ -39,7 +39,7 @@ st.title("🤖 Business Health Assistant")
 def load_models():
     # Load all models once
     os.environ["TRANSFORMERS_NO_TF"] = "1"
-    genai.configure(api_key="AIzaSyDXO1LSxJ9I5281a9E7e6MitdlWFlv_r30")
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
     return {
         'sentence_model': SentenceTransformer('all-MiniLM-L6-v2'),
         'gemini_model': genai.GenerativeModel("gemma-3-12b-it"),
@@ -116,7 +116,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if user_input := st.chat_input("Let me help you, write your business probleme here"):
+if user_input := st.chat_input("Let me help you, write your business probleme here..."):
     # Add user message to history and display immediately
     st.session_state.messages.append({"role": "human", "content": user_input})
     with st.chat_message("human"):
