@@ -49,7 +49,8 @@ def load_models():
 @st.cache_resource
 def process_data():
     # Process text data and create FAISS index once
-    text_path = r'Books\text\Diagnosisofbusiness.txt'
+    text_path = r'Books/text/Diagnosisofbusiness.txt' # For Linux based systems
+    #text_path = r'Books\text\Diagnosisofbusiness.txt'# For Windows based systems
     text = read_text_from_file(text_path)
     
     chunks = chunk_text(text)
