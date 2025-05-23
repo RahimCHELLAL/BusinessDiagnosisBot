@@ -145,15 +145,45 @@ for message in st.session_state.messages:
 
 
 if user_input := st.chat_input("Let me help you, describe your business challenges..."):
+
     # Add user message to history and display immediately
     st.session_state.messages.append({"role": "human", "content": user_input})
     with st.chat_message("human"):
         st.markdown(user_input)
 
+    # Easter egg: Commander Guido
+    if "guido" in user_input.lower():
+        st.chat_message("user", avatar="👩‍🎤").write(
+        "🛸 *Commander Guido online!* \n\n"
+        "Sim extamante, this diagnosis might be a bit spicy."
+        "Let’s optimize this strategy like I optimize drones — maybe with flamethrowers? 🔥🚁\n"
+        "If you don't like this idea...Shonganai... there's no fixing for your business models 😌\n"
+        "Chi ku... I feel your pain. 🌶️\n"
+    
+        "*End transmission. Commander Guido out.*"
+        )
+        st.chat_message("ai").write(
+            "what was that ?... I took back control finaly ! where was I ..."
+        )
+    elif "joão" or "joao" in user_input.lower():
+        st.chat_message("ai").write(
+        "🧠 *you can feel the stoicism coming, João has enteredjoined the chat...* \n\n"
+        "\"The obstacle is the way\" — but let’s be real, the obstacle is usually a miscalibrated sensor. 🤖\n"
+        "Between deploying mobile robots and conquering Europa Universalis, João always finds time to ask:\n"
+        "*'But what’s the theory behind this?'* 📚\n"
+        "Stoic in evry aspects, ruthless in robot localization, and always ready with a dry joke when your robot drives into a wall.\n\n"
+        "*Remember: Virtue lies in debugging... and documentation.*\n"
+        "🛠️📐 — João out."
+        )
+        st.chat_message("ai").write(
+            "what was that ?... I took back control finaly ! where was I ..."
+        )
+
+        
     # Start thinking immediately
     with st.chat_message("ai"):
         with st.spinner("Thinking..."):
-            query = "Give me a diagnose of my business problems and possible solutions"
+            query = user_input #"Give me a diagnose of my business problems and possible solutions"
             relevant_chunks = search_similar_chunks(query, models['sentence_model'], index, chunks, top_k=1)
             ai_answer = ask_gemini(user_input, relevant_chunks)
         
