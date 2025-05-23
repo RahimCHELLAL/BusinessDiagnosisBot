@@ -5,5 +5,3 @@ transformers
 google-generativeai
 torch
 scikit-learn
-time 
-random

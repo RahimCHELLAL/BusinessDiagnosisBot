@@ -2,7 +2,6 @@
 import streamlit as st
 import os
 
-from streamlit.components.v1 import html
 import faiss
 import textwrap 
 import numpy as np
