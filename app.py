@@ -150,39 +150,29 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
     with st.chat_message("human"):
         st.markdown(user_input)
 
-    # Easter egg: Commander Guido
-    if "guido" in user_input.lower():
-        st.chat_message("user", avatar="👩‍🎤").write(
-        "🛸 *Commander Guido online!* \n\n"
-        "Sim extamante, this diagnosis might be a bit spicy."
-        "Let’s optimize this strategy like I optimize drones — maybe with flamethrowers? 🔥🚁\n"
-        "If you don't like this idea...Shonganai... there's no fixing for your business models 😌\n"
-        "Chi ku... I feel your pain. 🌶️\n"
-    
-        "*End transmission. Commander Guido out.*"
-        )
-        st.chat_message("ai").write(
-            "what was that ?... I took back control finaly ! where was I ..."
-        )
-    elif "joão" or "joao" in user_input.lower():
-        st.chat_message("ai").write(
-        "🧠 *you can feel the stoicism coming, João has enteredjoined the chat...* \n\n"
-        "\"The obstacle is the way\" — but let’s be real, the obstacle is usually a miscalibrated sensor. 🤖\n"
-        "Between deploying mobile robots and conquering Europa Universalis, João always finds time to ask:\n"
-        "*'But what’s the theory behind this?'* 📚\n"
-        "Stoic in evry aspects, ruthless in robot localization, and always ready with a dry joke when your robot drives into a wall.\n\n"
-        "*Remember: Virtue lies in debugging... and documentation.*\n"
-        "🛠️📐 — João out."
-        )
-        st.chat_message("ai").write(
-            "what was that ?... I took back control finaly ! where was I ..."
-        )
-
         
     # Start thinking immediately
     with st.chat_message("ai"):
         with st.spinner("Thinking..."):
-            query = user_input #"Give me a diagnose of my business problems and possible solutions"
+            # Easter egg: Guido
+            if "guido" in user_input.lower():
+                query = user_input
+                user_input = "answer the following question "+ query + " as if you are Guido Berger, also known as Commander Guido, " \
+                "he is a random person and he like to finish his phrases randomly using words such as shonganai, Sim or Exatamente. " \
+                "He loves drones and works actively with them nd he generally joke about putting flamethrower on them,"
+
+                
+            # Easter egg: João
+            elif  "joao" in user_input.lower() or "joão" in user_input.lower():
+                query = user_input
+                user_input = "answer the following question" + query + " as if you are João Braun, a person that love stoicism phylosophy, " \
+                "works with mobile robots and love playing strategic games such as Europa Universalis 4, " \
+                "when doing research and project he lovehe love understanding the theory behind every aspect in his research."
+                
+            # Normal response
+            else:
+                query = user_input #"Give me a diagnose of my business problems and possible solutions"
+            
             relevant_chunks = search_similar_chunks(query, models['sentence_model'], index, chunks, top_k=1)
             ai_answer = ask_gemini(user_input, relevant_chunks)
         
