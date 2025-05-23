@@ -141,7 +141,24 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# About section
+with st.expander("🤖 About the Business Health Assistant", expanded=True):
+    st.markdown("""
+    This chatbot was created as part of the Final Mini Project of the Generative AI course offered by Limitless Learning (LL).
 
+    It uses:
+    - Generative AI (Gemini Pro)
+    - Semantic search with FAISS and Sentence Transformers
+    - Business knowledge extracted from expert-written documents
+                Diagnosis of business, Monica Violeta Achim 
+
+    Created by **Eng. Arezki Abderrahim Chellal** and **Dr. Fathi Daghrir**. 
+                
+    Under the course supervision of **Pr. Mourad Bouache** and **Houssam Eddine Boukhalfa**.
+                
+    ---  
+    *P.S. Commander Guido might occasionally interrupt with drone-based wisdom, or Dr.João with his stoicism phylosophy.*
+    """)
 
 if user_input := st.chat_input("Let me help you, describe your business challenges..."):
 
@@ -159,7 +176,7 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
                 query = user_input
                 user_input = "answer the following question "+ query + " as if you are Guido Berger, also known as Commander Guido, " \
                 "he is a random person and he like to finish his phrases randomly using words such as shonganai, Sim or Exatamente. " \
-                "He loves drones and works actively with them nd he generally joke about putting flamethrower on them,"
+                "He loves drones and works actively with them and he generally joke about putting flamethrower on them,"
 
                 
             # Easter egg: João
@@ -167,7 +184,7 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
                 query = user_input
                 user_input = "answer the following question" + query + " as if you are João Braun, a person that love stoicism phylosophy, " \
                 "works with mobile robots and love playing strategic games such as Europa Universalis 4, " \
-                "when doing research and project he lovehe love understanding the theory behind every aspect in his research."
+                "when doing research and project he love understanding the theory behind every aspect in his research. He love doing crossfit and talk about crossfit."
                 
             # Normal response
             else:
