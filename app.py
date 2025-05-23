@@ -2,7 +2,7 @@
 import streamlit as st
 import os
 
-
+from streamlit.components.v1 import html
 import faiss
 import textwrap 
 import numpy as np
@@ -10,6 +10,7 @@ from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer
 
 import time
+import random
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
@@ -109,15 +110,41 @@ def ask_gemini(question, context_chunks, max_context_chars=10000, max_retries=5,
     raise ResourceExhausted(f"Failed to get response after {max_retries} retries due to rate limiting.")
 
 
+SAMPLE_QUESTIONS = [
+    "How can I improve my customer retention?",
+    "What are signs of financial distress in a business?",
+    "How to evaluate my marketing strategy effectiveness?",
+    "What operational inefficiencies should I look for?",
+    "How can I better manage my cash flow?",
+    "What does Miles (2000) say about the purpose of diagnosis? ",
+    "According to Batrancea et al. (2008), what does business analysis involve?",
+    "What is the usefulness of a business diagnosis for a manager?",
+    "What is \"diagnosis\" in the context of a business company?"
+]
+
+
+
+
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+# Desplay a random suggestion
+if len(st.session_state.messages) == 0:
+    
+    suggestion = SAMPLE_QUESTIONS[random.randint(0, len(SAMPLE_QUESTIONS)-1)]
+    with st.chat_message("ai"):
+        st.markdown(f"💡 **Try asking:** *{suggestion}*")
+
+
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if user_input := st.chat_input("Let me help you, write your business probleme here..."):
+
+
+if user_input := st.chat_input("Let me help you, describe your business challenges..."):
     # Add user message to history and display immediately
     st.session_state.messages.append({"role": "human", "content": user_input})
     with st.chat_message("human"):
