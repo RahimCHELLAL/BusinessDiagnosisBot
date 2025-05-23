@@ -142,14 +142,14 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # About section
-with st.expander("🤖 About the Business Health Assistant", expanded=True):
+with st.expander("🤖 About the Business Health Assistant", expanded=False):
     st.markdown("""
     This chatbot was created as part of the Final Mini Project of the Generative AI course offered by Limitless Learning (LL).
 
     It uses:
     - Generative AI (Gemini Pro)
     - Semantic search with FAISS and Sentence Transformers
-    - Business knowledge extracted from expert-written documents
+    - Business knowledge extracted from expert-written documents:
                 Diagnosis of business, Monica Violeta Achim 
 
     Created by **Eng. Arezki Abderrahim Chellal** and **Dr. Fathi Daghrir**. 
