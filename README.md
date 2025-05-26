@@ -10,7 +10,7 @@ It uses:
 - **Semantic search with FAISS and Sentence Transformers** to find relevant context
 - **Retrieval-Augmented Generation** from the book _"Diagnosis of Business"_ by **Monica Violeta Achim**
   
-##  Technologies Used
+##  Libraries Used
 - Python 3.10+
 - [Streamlit](https://streamlit.io/) for UI framework
 - [FAISS](https://github.com/facebookresearch/faiss) for Vector similarity search - [Sentence Transformers](https://www.sbert.net/)
