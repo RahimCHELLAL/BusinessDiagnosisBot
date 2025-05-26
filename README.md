@@ -22,7 +22,8 @@ It uses:
 ## How to Run the App
 1. Clone this repository:
    
-       git clone https://github.com/your-username/business-health-assistant.git cd business-health-assistant
+       gh repo clone RahimCHELLAL/BusinessDiagnosisBot
+       cd business-health-assistant
   
 3. Install the required dependencies:
    
