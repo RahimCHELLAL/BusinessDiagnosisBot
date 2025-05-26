@@ -12,12 +12,9 @@ It uses:
   
 ##  Technologies Used
 - Python 3.10+
-- [Streamlit](https://streamlit.io/)
-- UI framework
-- [FAISS](https://github.com/facebookresearch/faiss)
-- Vector similarity search - [Sentence Transformers](https://www.sbert.net/)
-- Text embeddings - [Google Gemini API](https://ai.google.dev)
-- Language model API
+- [Streamlit](https://streamlit.io/) for UI framework
+- [FAISS](https://github.com/facebookresearch/faiss) for Vector similarity search - [Sentence Transformers](https://www.sbert.net/)
+- Text embeddings - [Google Gemini API](https://ai.google.dev) as Language model API
 
 ## How to Run the App
 1. Clone this repository:
