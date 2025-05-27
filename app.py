@@ -116,7 +116,7 @@ SAMPLE_QUESTIONS = [
     "What operational inefficiencies should I look for?",
     "How can I better manage my cash flow?",
     "What does Miles (2000) say about the purpose of diagnosis? ",
-    "According to Batrancea et al. (2008), what does business analysis involve?",
+    "According to Niculescu (1998), what does business analysis involve?",
     "What is the usefulness of a business diagnosis for a manager?",
     "What is \"diagnosis\" in the context of a business company?"
 ]
@@ -157,7 +157,7 @@ with st.expander("🤖 About the Business Health Assistant", expanded=False):
     Under the course supervision of **Pr. Mourad Bouache** and **Houssam Eddine Boukhalfa**.
                 
     ---  
-    *P.S. Commander Guido might occasionally interrupt with drone-based wisdom, or Dr.João with his stoicism phylosophy.*
+    *P.S. Commander Guido might occasionally interrupt with drone-based wisdom, or Dr.João with his stoicism phylosophy. (Easter egg)*
     """)
 
 if user_input := st.chat_input("Let me help you, describe your business challenges..."):
