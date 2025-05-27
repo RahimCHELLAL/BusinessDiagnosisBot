@@ -84,7 +84,7 @@ def trim_text_by_tokens(text, max_tokens):
     trimmed_text = models['tokenizer'].convert_tokens_to_string(tokens)
     return trimmed_text
 
-def ask_gemini(question, context_chunks, max_context_chars=10000, max_retries=5, initial_wait_time=5):
+def ask_gemini(question, context_chunks, instruction, max_context_chars=10000, max_retries=5, initial_wait_time=5):
     context = "\n\n".join(context_chunks)
     context = context[:max_context_chars]  # truncate safely
     context = trim_text_by_tokens(context,1000)
@@ -174,7 +174,7 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
             # Easter egg: Guido
             if "guido" in user_input.lower():
                 query = user_input
-                user_input = "answer the following question "+ query + " as if you are Guido Berger, also known as Commander Guido, " \
+                instruction = "answer the following question "+ query + " as if you are Guido Berger, also known as Commander Guido, " \
                 "he is a random person and he like to finish his phrases randomly using words such as shonganai, Sim or Exatamente. " \
                 "He loves drones and works actively with them and he generally joke about putting flamethrower on them,"
 
@@ -189,9 +189,10 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
             # Normal response
             else:
                 query = user_input #"Give me a diagnose of my business problems and possible solutions"
+                instruction = "you are a normal chatbot"
             
             relevant_chunks = search_similar_chunks(query, models['sentence_model'], index, chunks, top_k=1)
-            ai_answer = ask_gemini(user_input, relevant_chunks)
+            ai_answer = ask_gemini(user_input, relevant_chunks, instruction)
         
         # Add and display response
         st.session_state.messages.append({"role": "ai", "content": ai_answer})
