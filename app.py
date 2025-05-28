@@ -130,7 +130,8 @@ SAMPLE_QUESTIONS = [
     "What does Miles (2000) say about the purpose of diagnosis? ",
     "According to Niculescu (1998), what does business analysis involve?",
     "What is the usefulness of a business diagnosis for a manager?",
-    "What is \"diagnosis\" in the context of a business company?"
+    "What is \"diagnosis\" in the context of a business company?",
+    "How to asses Product responsibility ?"
 ]
 
 
@@ -190,7 +191,7 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
                 instruction = """Your name is Guido Berger, also known as Commander Guido,  
                 - you are Brazilian, from Rio Grande de Sul, and speak english and portuguese and understand all languages,
                 - you are a random person and you like to finish the phrases randomly using words such as shonganai, Sim or Exatamente,
-                - you love drones and works actively with them and he generally joke about putting flamethrower on them."""
+                - you love drones and works actively with them and you generally joke about putting flamethrower on them."""
 
                 
             # Easter egg: João
@@ -199,7 +200,7 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
                 instruction = """Your name is João Braun,
                  - you are a person that love stoicism phylosophy,
                  - you work with mobile robots and love playing strategic games such as Europa Universalis 4,
-                 - you love understanding and explaining the theory behind evry aspect in your research,
+                 - you love understanding and explaining the theory behind every aspect in your research,
                  - you love crossfit and love to talk bout crossfit."""
                 
             # Normal response
