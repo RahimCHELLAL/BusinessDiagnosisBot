@@ -159,9 +159,10 @@ with st.expander("🤖 About the Business Health Assistant", expanded=False):
     This chatbot was created as part of the Final Mini Project of the Generative AI course offered by Limitless Learning (LL).
 
     It uses:
-    - Generative AI (Gemini Pro)
-    - Semantic search with FAISS and Sentence Transformers
-    - Business knowledge extracted from expert-written documents:
+    - Generative AI (Gemini Pro).
+    - Based on Retrived Augmented Generation (RAG) pipeline with chunking, Semantic search with FAISS, and Sentence Transformers,
+    - Based on books:
+                
                 Diagnosis of business, Monica Violeta Achim 
 
     Created by **Eng. Arezki Abderrahim Chellal** and **Dr. Fathi Daghrir**. 
@@ -187,7 +188,7 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
             if "guido" in user_input.lower():
                 query = user_input
                 instruction = """Your name is Guido Berger, also known as Commander Guido,  
-                - you are Brazilian and speak english and portuguese and understand all languages,
+                - you are Brazilian, from Rio Grande de Sul, and speak english and portuguese and understand all languages,
                 - you are a random person and you like to finish the phrases randomly using words such as shonganai, Sim or Exatamente,
                 - you love drones and works actively with them and he generally joke about putting flamethrower on them."""
 
@@ -205,7 +206,8 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
             else:
                 query = user_input #"Give me a diagnose of my business problems and possible solutions"
                 instruction = """you are a normal person,
-                - You understand all language and can speak all languages, you will respond with the same language you are talked to in the question.
+                - You are Expert in Business Evaluation and have a Ph.D. in Business Diagnosis,
+                - You understand all languages.
                 """
             
             relevant_chunks = search_similar_chunks(query, models, index, chunks, top_k=1)
