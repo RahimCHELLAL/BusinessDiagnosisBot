@@ -3,7 +3,5 @@ sentence-transformers
 faiss-cpu
 transformers
 google-generativeai
-google
-genai
 torch
 scikit-learn
