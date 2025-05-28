@@ -10,7 +10,8 @@ from transformers import AutoTokenizer
 
 import time
 import random
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from google.api_core.exceptions import ResourceExhausted
 
 #Hello !
@@ -39,11 +40,12 @@ st.title("🤖 Business Health Assistant")
 def load_models():
     # Load all models once
     os.environ["TRANSFORMERS_NO_TF"] = "1"
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    
     return {
         'sentence_model': SentenceTransformer('all-MiniLM-L6-v2'),
-        'gemini_model': genai.GenerativeModel("gemma-3-12b-it"),
-        'tokenizer': AutoTokenizer.from_pretrained('bert-base-uncased')
+        #'gemini_model': genai.GenerativeModel("gemma-3-12b-it"),
+        'tokenizer': AutoTokenizer.from_pretrained('bert-base-uncased'),
+        'client' : genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     }
 
 @st.cache_resource
@@ -94,7 +96,17 @@ def ask_gemini(question, context_chunks, instruction, max_context_chars=10000, m
     wait_time = initial_wait_time
     while retries < max_retries:
         try:
-            response = models['gemini_model'].generate_content(prompt)
+            #config = genai.GenerationConfig(system_instruction=instruction)
+
+            response = models['client'].models.generate_content(
+                model = "gemini-2.0-flash",
+                config = types.GenerateContentConfig(
+                system_instruction=instruction),
+                contents=prompt
+                
+            )
+            
+            #models['gemini_model'].generate_content(prompt)
             return response.text
         except ResourceExhausted as e:
             print(f"Rate limit exceeded. Retrying in {wait_time} seconds... (Attempt {retries + 1}/{max_retries})")
@@ -174,24 +186,29 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
             # Easter egg: Guido
             if "guido" in user_input.lower():
                 query = user_input
-                instruction = "answer the following question "+ query + " as if you are Guido Berger, also known as Commander Guido, " \
-                "he is a random person and he like to finish his phrases randomly using words such as shonganai, Sim or Exatamente. " \
-                "He loves drones and works actively with them and he generally joke about putting flamethrower on them,"
+                instruction = """Your name is Guido Berger, also known as Commander Guido,  
+                - you are Brazilian and speak english and portuguese and understand all languages,
+                - you are a random person and you like to finish the phrases randomly using words such as shonganai, Sim or Exatamente,
+                - you love drones and works actively with them and he generally joke about putting flamethrower on them."""
 
                 
             # Easter egg: João
             elif  "joao" in user_input.lower() or "joão" in user_input.lower():
                 query = user_input
-                user_input = "answer the following question" + query + " as if you are João Braun, a person that love stoicism phylosophy, " \
-                "works with mobile robots and love playing strategic games such as Europa Universalis 4, " \
-                "when doing research and project he love understanding the theory behind every aspect in his research. He love doing crossfit and talk about crossfit."
+                instruction = """Your name is João Braun,
+                 - you are a person that love stoicism phylosophy,
+                 - you work with mobile robots and love playing strategic games such as Europa Universalis 4,
+                 - you love understanding and explaining the theory behind evry aspect in your research,
+                 - you love crossfit and love to talk bout crossfit."""
                 
             # Normal response
             else:
                 query = user_input #"Give me a diagnose of my business problems and possible solutions"
-                instruction = "you are a normal chatbot"
+                instruction = """you are a normal person,
+                - You understand all language and can speak all languages, you will respond with the same language you are talked to in the question.
+                """
             
-            relevant_chunks = search_similar_chunks(query, models['sentence_model'], index, chunks, top_k=1)
+            relevant_chunks = search_similar_chunks(query, models, index, chunks, top_k=1)
             ai_answer = ask_gemini(user_input, relevant_chunks, instruction)
         
         # Add and display response
