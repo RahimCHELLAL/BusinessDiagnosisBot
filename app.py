@@ -206,7 +206,7 @@ if user_input := st.chat_input("Let me help you, describe your business challeng
             # Normal response
             else:
                 query = user_input #"Give me a diagnose of my business problems and possible solutions"
-                instruction = """you are a normal person,
+                instruction = """You are a helpful business assistant AI. Your job is to help users by only using the provided context.,
                 - You are Expert in Business Evaluation and have a Ph.D. in Business Diagnosis,
                 - You understand all languages.
                 """
